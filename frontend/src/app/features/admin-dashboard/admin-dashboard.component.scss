@@ -1,0 +1,23 @@
+.admin-dashboard-container {
+  padding: 24px;
+
+  h2 {
+    margin-bottom: 16px;
+  }
+
+  .action-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    .search-field {
+      flex: 1;
+      max-width: 300px;
+    }
+  }
+
+  .full-width-table {
+    width: 100%;
+  }
+}

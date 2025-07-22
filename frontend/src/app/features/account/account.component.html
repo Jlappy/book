@@ -1,0 +1,16 @@
+<div class="account-container" *ngIf="user$ | async as u">
+  <div class="account-card">
+    <div class="avatar">
+      <img [src]="u.avatar || 'https://i.pravatar.cc/100?u=' + u.email" alt="Avatar" />
+    </div>
+
+    <div class="info">
+      <h2>{{ u.fullName || 'Người dùng' }}</h2>
+      <p><strong>Email:</strong> {{ u.email }}</p>
+      <p><strong>Vai trò:</strong> {{ u.role === 'admin' ? 'Quản trị viên' : 'Người dùng' }}</p>
+      <p *ngIf="u.phone"><strong>SĐT:</strong> {{ u.phone }}</p>
+    </div>
+
+    <button class="logout-btn" (click)="logout()">🚪 Đăng xuất</button>
+  </div>
+</div>

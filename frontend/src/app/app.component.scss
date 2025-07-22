@@ -1,0 +1,21 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1 0 auto;
+    padding-bottom: 2rem; // khoảng cách với footer
+}
+
+app-footer {
+    flex-shrink: 0;
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 1rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+    border-top: 1px solid #dee2e6;
+}

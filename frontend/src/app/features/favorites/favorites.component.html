@@ -1,0 +1,27 @@
+<div class="favorite-books-container">
+    <div *ngIf="loading" class="loading-state">
+        <p>🔄 Đang tải sách yêu thích...</p>
+    </div>
+
+    <div *ngIf="!loading && favoriteBooks.length === 0 && !errorMessage" class="empty-state">
+        <p>❤️ Bạn chưa có cuốn sách yêu thích nào.</p>
+        <p>Hãy tìm kiếm và thêm vào danh sách yêu thích của bạn!</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+        <p>⚠️ {{ errorMessage }}</p>
+    </div>
+
+    <div class="book-grid" *ngIf="paginatedFavorites.length > 0">
+        <app-book-card *ngFor="let book of paginatedFavorites" [book]="book" [showActions]="true"
+            [isFavorite]="isInFavorites(book._id!)" (toggleFavorite)="toggleFavorite(book._id!)"
+            (addToCart)="addToCart(book._id!)" class="book-card-item">
+        </app-book-card>
+    </div>
+
+    <div class="paginator-container" *ngIf="totalItems > pageSize">
+        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="currentPage - 1"
+            [pageSizeOptions]="[pageSize]" (page)="onPageChange($event)">
+        </mat-paginator>
+    </div>
+</div>

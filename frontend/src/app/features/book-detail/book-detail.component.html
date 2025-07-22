@@ -1,0 +1,51 @@
+<div class="book-detail-container">
+    <div *ngIf="loading" class="loading-state">
+        <mat-spinner></mat-spinner>
+        <p>Đang tải chi tiết sách...</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+        <p>⚠️ {{ errorMessage }}</p>
+    </div>
+
+    <mat-card *ngIf="book && !loading" class="book-detail-card">
+        <div class="book-detail-header">
+            <div class="book-cover-wrapper">
+                <img *ngIf="book.coverUrl" [src]="book.coverUrl" [alt]="book.title" class="book-cover-large">
+                <img *ngIf="!book.coverUrl && book.cover"
+                    [src]="'http://covers.openlibrary.org/b/id/' + book.cover + '-L.jpg'" [alt]="book.title"
+                    class="book-cover-large">
+                <div *ngIf="!book.coverUrl && !book.cover" class="no-cover-large">
+                    <span>Không có bìa</span>
+                    <mat-icon>menu_book</mat-icon>
+                </div>
+            </div>
+
+            <div class="book-info-main">
+                <mat-card-title>{{ book.title }}</mat-card-title>
+                <mat-card-subtitle>
+                    <strong>Tác giả:</strong>
+                    <span>{{ isArray(book.author) ? book.author?.join(', ') : book.author || 'Đang cập nhật'
+                        }}</span>
+                </mat-card-subtitle>
+                <p><strong>Năm xuất bản:</strong> {{ book.first_publish_year || 'N/A' }}</p>
+                <p><strong>Giá:</strong> {{ book.price | currency:'VND':'symbol':'1.0-0' }}</p>
+                <p *ngIf="book.first_publish_year"><strong>Nhà xuất bản:</strong> {{ book.first_publish_year }}</p>
+            </div>
+        </div>
+
+        <mat-card-content class="book-detail-content">
+            <h3>Mô tả:</h3>
+            <p>{{ book.description || 'Không có mô tả.' }}</p>
+        </mat-card-content>
+
+        <mat-card-actions class="book-detail-actions" *ngIf="!isAdmin()">
+            <button mat-raised-button color="primary" (click)="addToCart(book._id!)">
+                <mat-icon>add_shopping_cart</mat-icon> Thêm vào giỏ hàng
+            </button>
+            <button mat-icon-button color="warn" (click)="toggleFavorite(book._id!)">
+                <mat-icon>{{ isInFavorites(book._id!) ? 'favorite' : 'favorite_border' }}</mat-icon>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>

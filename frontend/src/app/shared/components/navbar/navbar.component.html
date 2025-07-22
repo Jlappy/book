@@ -1,0 +1,35 @@
+<mat-toolbar color="primary" class="navbar">
+    <span class="logo" routerLink="/">📚 BookStore</span>
+
+    <span class="search-container">
+        <mat-form-field class="search-input" appearance="fill">
+            <input matInput placeholder="Search books..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+            <button mat-icon-button matSuffix (click)="onSearch()">
+                <mat-icon>search</mat-icon>
+            </button>
+        </mat-form-field>
+    </span>
+
+    <span class="spacer"></span>
+
+    <ng-container *ngIf="authService.currentUser$ | async as user; else guest">
+
+        <ng-container *ngIf="user.role === 'user'">
+            <button mat-button routerLink="/favorites">Favorites</button>
+            <button mat-button routerLink="/cart">Cart</button>
+        </ng-container>
+
+        <ng-container *ngIf="user.role === 'admin'">
+            <button mat-button routerLink="/dashboard">Dashboard</button>
+        </ng-container>
+
+        <button mat-button routerLink="/account">Account</button>
+        <button mat-button (click)="onLogout()">Logout</button>
+
+    </ng-container>
+
+    <ng-template #guest>
+        <button mat-button routerLink="/login">Login</button>
+        <button mat-button routerLink="/register">Register</button>
+    </ng-template>
+</mat-toolbar>

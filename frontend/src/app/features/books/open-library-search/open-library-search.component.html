@@ -1,0 +1,55 @@
+<div class="open-library-search-container">
+  <h2>Tìm kiếm & Thêm sách từ OpenLibrary</h2>
+
+  <div class="top-actions">
+    <button mat-raised-button class="back-button" (click)="goBackToDashboard()">
+      <mat-icon>arrow_back</mat-icon> Quay lại Dashboard
+    </button>
+  </div>
+
+  <div class="search-input-group">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="onSearch()"
+      placeholder="Nhập tiêu đề, tác giả, hoặc ISBN..."
+      class="search-input"
+    />
+    <button (click)="onSearch()" [disabled]="isLoading" class="search-button">
+      <span *ngIf="!isLoading">Tìm kiếm</span>
+      <span *ngIf="isLoading">Đang tìm...</span>
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="message error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="message success-message">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="searchResults.length > 0" class="search-results">
+    <h3>Kết quả tìm kiếm ({{ searchResults.length }} cuốn):</h3>
+    <div class="book-list">
+      <div *ngFor="let book of searchResults" class="book-item">
+        <div class="book-cover">
+          <img *ngIf="book.coverUrl" [src]="book.coverUrl" alt="Bìa sách" />
+          <div *ngIf="!book.coverUrl" class="no-cover">Không có bìa</div>
+        </div>
+        <div class="book-details">
+          <h4>{{ book.title }}</h4>
+          <p><strong>Tác giả:</strong> {{ book.author?.join(', ') || 'Không rõ' }}</p>
+          <p *ngIf="book.first_publish_year"><strong>Năm xuất bản:</strong> {{ book.first_publish_year }}</p>
+          <p *ngIf="book.isbn"><strong>ISBN:</strong> {{ book.isbn }}</p>
+        </div>
+        <div class="book-actions">
+          <button (click)="addBookToDatabase(book)" [disabled]="isLoading" class="add-button">
+            <span *ngIf="!isLoading">Thêm vào thư viện</span>
+            <span *ngIf="isLoading">Đang thêm...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

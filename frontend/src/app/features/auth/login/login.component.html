@@ -1,0 +1,38 @@
+<div class="auth-page" [formGroup]="loginForm">
+    <div class="auth-left">
+        <h1>Welcome Back!</h1>
+        <p>Log in to access your account.</p>
+    </div>
+
+    <div class="auth-right">
+        <h2>Login to Library</h2>
+        <p>Enter your details below</p>
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="example@mail.com" />
+            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Invalid email</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" />
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Toggle password visibility'">
+                <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
+        </mat-form-field>
+
+        <mat-error *ngIf="loginError" class="error-message">
+            {{ loginError }}
+        </mat-error>
+
+        <button mat-raised-button color="primary" class="full-width" (click)="handleLogin()">Log In</button>
+
+        <p class="register-link">
+            Don’t have an account?
+            <a routerLink="/register">Sign up</a>
+        </p>
+    </div>
+</div>

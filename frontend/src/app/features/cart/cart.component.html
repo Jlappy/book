@@ -1,0 +1,33 @@
+<mat-card *ngIf="loading">
+    <mat-card-content>Đang tải giỏ hàng...</mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="!loading && cart?.items?.length">
+    <mat-card-title>Giỏ hàng của bạn</mat-card-title>
+
+    <div *ngFor="let item of cart?.items" class="cart-item">
+        <img [src]="item.book.coverUrl || ('http://covers.openlibrary.org/b/id/' + item.book.cover + '-S.jpg')"
+            alt="cover">
+        <div class="cart-item-info">
+            <h4>{{ item.book.title }}</h4>
+            <p>{{ item.book.price | currency:'VND' }}</p>
+            <input type="number" [(ngModel)]="item.quantity" (change)="updateQuantity(item.book._id!, item.quantity)">
+        </div>
+        <button mat-icon-button color="warn" (click)="removeItem(item.book._id!)">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+
+    <mat-card-content class="cart-total">
+        <strong>Tổng:</strong> {{ total() | currency:'VND' }}
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-raised-button color="warn" (click)="clearCart()">Xóa toàn bộ</button>
+        <button mat-raised-button color="primary" routerLink="/checkout">Thanh toán</button>
+    </mat-card-actions>
+</mat-card>
+
+<mat-card *ngIf="!loading && !cart?.items?.length">
+    <mat-card-content>🛒 Giỏ hàng của bạn đang trống.</mat-card-content>
+</mat-card>

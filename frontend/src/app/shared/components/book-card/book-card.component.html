@@ -1,0 +1,44 @@
+<mat-card class="book-card" *ngIf="book">
+  <a [routerLink]="['/book', book._id]" class="book-link-area">
+    <div class="book-cover-container">
+      <img *ngIf="book.coverUrl" [src]="book.coverUrl" [alt]="book.title" class="book-cover">
+      <img *ngIf="!book.coverUrl && book.cover" [src]="'http://covers.openlibrary.org/b/id/' + book.cover + '-L.jpg'"
+        [alt]="book.title" class="book-cover">
+      <div *ngIf="!book.coverUrl && !book.cover" class="no-cover">
+        <span>Không có bìa</span>
+        <mat-icon>menu_book</mat-icon>
+      </div>
+    </div>
+
+    <mat-card-content class="book-content">
+      <h3 class="book-title">
+        <a [routerLink]="['/book', book._id]" class="book-title-link">
+          {{ book.title }}
+        </a>
+      </h3>
+      <p class="book-author">
+        <strong>Tác giả:</strong>
+        {{ isArray(book.author) ? book.author?.join(', ') : book.author || 'Đang cập nhật' }}
+      </p>
+      <p *ngIf="book.first_publish_year" class="book-year">
+        <strong>Năm xuất bản:</strong> {{ book.first_publish_year || 'N/A' }}
+      </p>
+      <p class="book-price">
+        <strong>Giá:</strong> {{ book.price | currency:'VND':'symbol':'1.0-0' }}
+      </p>
+      <p *ngIf="book.description" class="book-description">
+        {{ book.description.length > 100 ? (book.description | slice:0:100) + '...' : book.description }}
+      </p>
+    </mat-card-content>
+  </a>
+
+  <mat-card-actions *ngIf="showActions && userRole !== 'admin'" class="book-actions">
+    <button mat-flat-button color="primary" (click)="handleAddToCart($event)">
+      <mat-icon>add_shopping_cart</mat-icon> Thêm vào giỏ
+    </button>
+    <button mat-icon-button (click)="handleToggleFavorite($event)">
+      <span *ngIf="isFavorite">❤️</span>
+      <span *ngIf="!isFavorite">🤍</span>
+    </button>
+  </mat-card-actions>
+</mat-card>

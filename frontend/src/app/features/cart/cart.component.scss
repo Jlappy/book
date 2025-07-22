@@ -1,0 +1,26 @@
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 10px 0;
+
+  img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+  }
+
+  .cart-item-info {
+    flex: 1;
+  }
+
+  input[type="number"] {
+    width: 60px;
+  }
+}
+
+.cart-total {
+  margin-top: 1rem;
+  font-size: 1.2em;
+  font-weight: bold;
+}

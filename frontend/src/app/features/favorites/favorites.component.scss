@@ -1,0 +1,40 @@
+.favorite-books-container {
+    padding: 2rem;
+
+    .loading-state,
+    .empty-state,
+    .error-message {
+        text-align: center;
+        font-size: 1.2rem;
+        margin-top: 2rem;
+    }
+
+    .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .paginator-container {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .book-card-item {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
