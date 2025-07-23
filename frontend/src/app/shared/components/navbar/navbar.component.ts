@@ -9,7 +9,6 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 
-
 @Component({
   selector: 'app-navbar',
   imports: [

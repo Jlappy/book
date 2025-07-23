@@ -7,7 +7,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
 
 import { BookService } from '../../core/services/book.service';
 import { BookFormDialogComponent } from '../../shared/components/book-form-dialog/book-form-dialog.component';
