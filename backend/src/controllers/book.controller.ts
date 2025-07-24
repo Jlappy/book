@@ -3,7 +3,8 @@ import * as BookService from '../services/book.service';
 
 export const getAllBooks = async (req: Request, res: Response) => {
   try {
-    const books = await BookService.getAllBooks();
+    const { q } = req.query; // q = từ khóa tìm kiếm
+    const books = await BookService.getAllBooks(q?.toString());
     res.json(books);
   } catch (error: any) {
     console.error('Lỗi khi lấy tất cả sách:', error);
@@ -11,12 +12,13 @@ export const getAllBooks = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getBookById = async (req: Request, res: Response) => {
   try {
     const { bookId } = req.params;
     const book = await BookService.getBookById(bookId);
     if (!book) {
-      return res.status(404).json({ message: 'Không tìm thấy sách' });
+      return res.status(400).json({ message: 'Không tìm thấy sách' });
     }
     res.json(book);
   } catch (error: any) {

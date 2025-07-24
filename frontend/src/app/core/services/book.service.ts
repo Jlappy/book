@@ -22,6 +22,10 @@ export class BookService {
     return this.baseService.get<IBook[]>(this.apiUrl);
   }
 
+  searchBooksInDb(query: string): Observable<IBook[]> {
+    return this.baseService.get<IBook[]>(`/books?q=${encodeURIComponent(query)}`);
+  }
+
   getBookById(bookId: string): Observable<IBook> {
     return this.baseService.get<IBook>(`${this.apiUrl}/${bookId}`);
   }

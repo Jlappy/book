@@ -28,3 +28,14 @@ export interface IOrderPopulated {
   createdAt?: Date;
   status: 'pending' | 'completed';
 }
+
+export interface ICreateOrderDto {
+  items: {
+    bookId: string;          // ID của sách (_id)
+    quantity: number;
+    price: number;
+  }[];
+  total: number;
+  status?: 'pending' | 'completed';  
+  createdAt?: Date;                 
+}

@@ -1,9 +1,14 @@
+// src/app/guards/auth.guard.ts
 import { CanActivateFn, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { inject } from '@angular/core';
-import { map, switchMap, take } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { switchMap, take, map, catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+): Observable<boolean | ReturnType<Router['createUrlTree']>> => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -13,15 +18,24 @@ export const authGuard: CanActivateFn = (route, state) => {
       authService.currentUser$.pipe(
         take(1),
         map(user => {
-          console.log('AuthGuard: Current user received:', user);
-          if (user) {
+          const isLoggedIn = !!user;
+          if (isLoggedIn) {
             return true;
-          } else {
-            console.log('AuthGuard: User is null/undefined, redirecting to login.'); // <-- THÊM DÒNG NÀY ĐỂ DEBUG
-            return router.createUrlTree(['/login'], {
-              queryParams: { returnUrl: state.url }
-            });
           }
+
+          // 👇 Giải thích rõ ràng redirect
+          const redirectToLogin = router.createUrlTree(['/login'], {
+            queryParams: { returnUrl: state.url }
+          });
+          return redirectToLogin;
+        }),
+        catchError(() => {
+          // 👇 Trường hợp lỗi hệ thống vẫn redirect về login
+          return of(
+            router.createUrlTree(['/login'], {
+              queryParams: { returnUrl: state.url }
+            })
+          );
         })
       )
     )

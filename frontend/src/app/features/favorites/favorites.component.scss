@@ -1,40 +1,49 @@
 .favorite-books-container {
-    padding: 2rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 
-    .loading-state,
-    .empty-state,
-    .error-message {
-        text-align: center;
-        font-size: 1.2rem;
-        margin-top: 2rem;
-    }
+  .loading-state,
+  .empty-state,
+  .error-message {
+    text-align: center;
+    padding: 2rem 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    background-color: #f9f9f9;
+    color: #444;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
 
-    .book-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 1.5rem;
-        margin-top: 1.5rem;
-    }
+  .error-message {
+    background-color: #ffebee;
+    color: #c62828;
+  }
 
-    .paginator-container {
-        margin-top: 2rem;
-        display: flex;
-        justify-content: center;
-    }
+  .empty-state {
+    background-color: #fff8e1;
+    color: #f57c00;
+  }
 
-    .book-card-item {
-        animation: fadeIn 0.3s ease-in-out;
-    }
-}
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
+  .book-card-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
+  }
+
+  .paginator-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
 }

@@ -44,7 +44,9 @@
                 <mat-icon>add_shopping_cart</mat-icon> Thêm vào giỏ hàng
             </button>
             <button mat-icon-button color="warn" (click)="toggleFavorite(book._id!)">
-                <mat-icon>{{ isInFavorites(book._id!) ? 'favorite' : 'favorite_border' }}</mat-icon>
+                <mat-icon color="warn">
+                    {{ isInFavorites(book._id!) ? 'favorite' : 'favorite_border' }}
+                </mat-icon>
             </button>
         </mat-card-actions>
     </mat-card>

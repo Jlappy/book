@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
-import { IOrderPopulated, IOrder } from '../../shared/models/order.model';
+import { IOrderPopulated, IOrder, ICreateOrderDto } from '../../shared/models/order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class OrderService {
     return this.baseService.get<IOrderPopulated[]>(this.apiUrl);
   }
 
-  createOrder(): Observable<IOrderPopulated> {
+  createOrder(orderData: Partial<ICreateOrderDto>): Observable<IOrderPopulated> {
     return this.baseService.post<IOrderPopulated>(this.apiUrl, {});
   }
 

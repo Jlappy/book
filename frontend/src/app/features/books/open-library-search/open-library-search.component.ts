@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookService } from '../../../core/services/book.service';
-import { IBook, IOpenLibrarySearchBackendResult } from '../../../shared/models/book.model';
+import { IBook, IBookCreate, IOpenLibrarySearchBackendResult } from '../../../shared/models/book.model';
 import { catchError, finalize, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -67,7 +67,8 @@ export class OpenLibrarySearchComponent implements OnInit {
     this.errorMessage = null;
     this.successMessage = null;
 
-    const bookToAdd: IBook = {
+    const bookToAdd: IBookCreate = {
+      // _id: olBook.
       title: olBook.title,
       author: olBook.author || [],
       description: '',

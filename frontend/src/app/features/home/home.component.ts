@@ -9,6 +9,8 @@ import { BookCardComponent } from '../../shared/components/book-card/book-card.c
 import { BookService } from '../../core/services/book.service';
 import { FavoriteService } from '../../core/services/favorite.service';
 import { CartService } from '../../core/services/cart.service';
+import { AuthService } from '../../core/services/auth.service';
+import { SearchService } from '../../core/services/search.service';
 
 @Component({
     selector: 'app-home',
@@ -24,8 +26,10 @@ import { CartService } from '../../core/services/cart.service';
 })
 export class HomeComponent implements OnInit {
     books: IBook[] = [];
+
     paginatedBooks: IBook[] = [];
     favorites: string[] = [];
+    favoriteSet: Set<string> = new Set();
 
     totalItems: number = 0;
     pageSize = 12;
@@ -38,11 +42,19 @@ export class HomeComponent implements OnInit {
         private bookService: BookService,
         private favoriteService: FavoriteService,
         private cartService: CartService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private authService: AuthService,
+        private searchService: SearchService
     ) { }
 
     ngOnInit(): void {
-        this.loadInitialData();
+        this.searchService.searchTerm$.subscribe(term => {
+            if (term) {
+                this.searchBooks(term);
+            } else {
+                this.loadInitialData();
+            }
+        });
     }
 
     loadInitialData(): void {
@@ -54,27 +66,37 @@ export class HomeComponent implements OnInit {
                 console.error('Lỗi khi tải sách:', error);
                 this.errorMessage = 'Không thể tải sách.';
                 return of([] as IBook[]);
-            })
-        );
-
-        const favorites$ = this.favoriteService.getFavorites().pipe(
-            catchError(error => {
-                console.error('Lỗi khi tải yêu thích:', error);
-                this.snackBar.open('Không thể tải danh sách yêu thích.', 'Đóng', { duration: 4000 });
-                return of([] as string[]);
-            })
-        );
-
-        forkJoin([books$, favorites$]).pipe(
+            }),
             finalize(() => this.loading = false)
-        ).subscribe(([booksData, favoriteIdsData]: [IBook[], string[]]) => {
-            this.books = booksData;
-            this.totalItems = booksData.length;
-            this.favorites = favoriteIdsData;
+        )
+            .subscribe(books => {
+                this.books = books;
+                this.totalItems = books.length;
+                this.paginate()
+            })
+
+        if (this.authService.isLoggedIn()) {
+            this.favoriteService.getFavorites().pipe(
+                catchError(error => {
+                    console.error('Lỗi khi tải yêu thích:', error);
+                    return of([] as string[]);
+                })
+            )
+                .subscribe(favorites => {
+                    this.favorites = favorites;
+                    this.favoriteSet = new Set(favorites)
+                })
+        }
+    }
+
+    searchBooks(term: string): void {
+        this.bookService.searchBooksInDb(term).subscribe(results => {
+            this.books = results;
+            this.totalItems = results.length;
+            this.currentPage = 1;
             this.paginate();
         });
     }
-
 
     paginate(): void {
         const start = (this.currentPage - 1) * this.pageSize;
@@ -89,9 +111,8 @@ export class HomeComponent implements OnInit {
     }
 
     isInFavorites(bookId: string): boolean {
-        return this.favorites.includes(bookId);
+        return this.favoriteSet.has(bookId)
     }
-
     toggleFavorite(bookId: string): void {
         if (this.isInFavorites(bookId)) {
             this.favoriteService.removeFavorite(bookId).subscribe({

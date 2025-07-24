@@ -15,14 +15,14 @@ import { OpenLibrarySearchComponent } from './features/books/open-library-search
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'book/:id', component: BookDetailComponent },
-    { path: 'login', component: LoginComponent },
+    { path: 'login', component: LoginComponent, canActivate: [authGuard] },
     { path: 'register', component: RegisterComponent },
     { path: 'favorites', component: FavoritesComponent, canActivate: [authGuard] },
     { path: 'cart', component: CartComponent, canActivate: [authGuard] },
-    { path: 'order', component: OrdersComponent, canActivate: [authGuard] },
+    { path: 'order', component: OrdersComponent },
     { path: 'dashboard', component: AdminDashboardComponent, canActivate: [adminGuard] },
     { path: 'account', component: AccountComponent, canActivate: [authGuard] },
     { path: 'admin/openlibrary-search', component: OpenLibrarySearchComponent, canActivate: [adminGuard] },
-    
+
     { path: '**', redirectTo: '' }
 ];

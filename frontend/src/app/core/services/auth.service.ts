@@ -50,11 +50,11 @@ export class AuthService {
   loadCurrentUser(): Observable<IUser | null> {
     return this.baseService.get<IUser>(`${this.apiUrl}/me`).pipe(
       tap(user => {
-        console.log('User loaded via session:', user);
+        // console.log('User loaded via session:', user);
         this.currentUserSubject.next(user);
       }),
       catchError(error => {
-        console.error('Session invalid or expired:', error);
+        // console.error('Session invalid or expired:', error);
         this.currentUserSubject.next(null);
         return of(null);
       })

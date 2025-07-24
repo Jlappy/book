@@ -1,8 +1,10 @@
 <mat-toolbar color="primary" class="navbar">
-    <span class="logo" routerLink="/">📚 BookStore</span>
+    <span class="logo" (click)="goHome()" style="cursor: pointer">📚 BookStore</span>
 
-    <span class="search-container">
-        <mat-form-field class="search-input" appearance="fill">
+    <span class="spacer"></span>
+
+    <span class="search-container" *ngIf="authService.isAdmin">
+        <mat-form-field class=" search-input" appearance="outline">
             <input matInput placeholder="Search books..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
             <button mat-icon-button matSuffix (click)="onSearch()">
                 <mat-icon>search</mat-icon>

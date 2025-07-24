@@ -11,11 +11,9 @@
     </div>
 
     <mat-card-content class="book-content">
-      <h3 class="book-title">
-        <a [routerLink]="['/book', book._id]" class="book-title-link">
-          {{ book.title }}
-        </a>
-      </h3>
+      <p [routerLink]="['/book', book._id]" class="book-title-link">
+        {{ book.title }}
+      </p>
       <p class="book-author">
         <strong>Tác giả:</strong>
         {{ isArray(book.author) ? book.author?.join(', ') : book.author || 'Đang cập nhật' }}
@@ -37,8 +35,9 @@
       <mat-icon>add_shopping_cart</mat-icon> Thêm vào giỏ
     </button>
     <button mat-icon-button (click)="handleToggleFavorite($event)">
-      <span *ngIf="isFavorite">❤️</span>
-      <span *ngIf="!isFavorite">🤍</span>
+      <mat-icon color="warn" [matTooltip]="isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'">
+        {{ isFavorite ? 'favorite' : 'favorite_border' }}
+      </mat-icon>
     </button>
   </mat-card-actions>
 </mat-card>

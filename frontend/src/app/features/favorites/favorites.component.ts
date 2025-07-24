@@ -23,13 +23,16 @@ import { catchError, finalize, forkJoin, of } from 'rxjs';
 })
 export class FavoritesComponent implements OnInit {
   favoriteBooks: IBook[] = [];
+
   paginatedFavorites: IBook[] = [];
   favoriteBookIds: string[] = [];
 
   totalItems: number = 0;
   pageSize = 12;
+
   currentPage = 1;
   loading = true;
+
   errorMessage: string | null = null;
 
   constructor(
@@ -40,10 +43,10 @@ export class FavoritesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadFavoriteBooks();
+    this.loadInitialData();
   }
 
-  loadFavoriteBooks(): void {
+  loadInitialData(): void {
     this.loading = true;
     this.errorMessage = null;
 
@@ -54,35 +57,28 @@ export class FavoritesComponent implements OnInit {
         this.favoriteBookIds = [];
         return of([]);
       })
-    ).subscribe((favoriteIds: string[] | IBook[]) => {
-      this.favoriteBookIds = Array.isArray(favoriteIds) && typeof favoriteIds[0] === 'object'
-        ? (favoriteIds as IBook[]).map(book => book._id!)
-        : (favoriteIds as string[]);
+    ).subscribe((favoriteIds: string[]) => {
+      this.favoriteBookIds = favoriteIds;
+      this.totalItems = favoriteIds.length;
 
-      this.totalItems = this.favoriteBookIds.length;
-
-      if (this.favoriteBookIds.length > 0) {
-        const requests = this.favoriteBookIds.map(id =>
-          this.bookService.getBookById(id).pipe(
-            catchError(() => of(null))
-          )
-        );
-
-        forkJoin(requests).pipe(
-          finalize(() => this.loading = false)
-        ).subscribe(results => {
-          this.favoriteBooks = results.filter(book => book !== null) as IBook[];
-          this.paginate();
-          if (!this.favoriteBooks.length) {
-            this.errorMessage = 'Không thể tải chi tiết sách yêu thích.';
-          }
-        });
-      } else {
+      if (favoriteIds.length === 0) {
         this.favoriteBooks = [];
         this.paginate();
-        this.loading = false;
+        return;
       }
-    });
+      const requests = favoriteIds.map(id =>
+        this.bookService.getBookById(id).pipe(catchError(() => of(null)))
+      );
+
+      forkJoin(requests).subscribe(results => {
+        this.favoriteBooks = results.filter(book => book !== null) as IBook[];
+        if (!this.favoriteBooks.length) {
+          this.errorMessage = 'Không thể tải chi tiết sách yêu thích.';
+        }
+        this.paginate();
+      });
+
+    })
   }
 
   paginate(): void {

@@ -1,8 +1,17 @@
 import Book, { IBook } from '../models/book.model';
 
-export const getAllBooks = async (): Promise<IBook[]> => {
-  const books = await Book.find();
-  return books;
+export const getAllBooks = async (q?: string): Promise<IBook[]> => {
+  if (q && q.trim()) {
+    const keyword = q.trim();
+    return await Book.find({
+      $or: [
+        { title: { $regex: keyword, $options: 'i' } },
+        { description: { $regex: keyword, $options: 'i' } },
+        { author: { $elemMatch: { $regex: keyword, $options: 'i' } } }
+      ]
+    });
+  }
+  return await Book.find();
 };
 
 export const getBookById = async (bookId: string): Promise<IBook | null> => {

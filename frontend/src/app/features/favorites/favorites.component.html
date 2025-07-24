@@ -13,12 +13,14 @@
     </div>
 
     <div class="book-grid" *ngIf="paginatedFavorites.length > 0">
-        <app-book-card *ngFor="let book of paginatedFavorites" [book]="book" [showActions]="true"
-            [isFavorite]="isInFavorites(book._id!)" (toggleFavorite)="toggleFavorite(book._id!)"
-            (addToCart)="addToCart(book._id!)" class="book-card-item">
-        </app-book-card>
+        <ng-container *ngFor="let book of paginatedFavorites">
+            <ng-container *ngIf="book && book._id">
+                <app-book-card [book]="book" [showActions]="true" [isFavorite]="isInFavorites(book._id)"
+                    (toggleFavorite)="toggleFavorite(book._id)" (addToCart)="addToCart(book._id)"
+                    class="book-card-item"></app-book-card>
+            </ng-container>
+        </ng-container>
     </div>
-
     <div class="paginator-container" *ngIf="totalItems > pageSize">
         <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="currentPage - 1"
             [pageSizeOptions]="[pageSize]" (page)="onPageChange($event)">

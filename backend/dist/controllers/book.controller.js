@@ -37,7 +37,8 @@ exports.deleteBook = exports.updateBook = exports.createBook = exports.getBookBy
 const BookService = __importStar(require("../services/book.service"));
 const getAllBooks = async (req, res) => {
     try {
-        const books = await BookService.getAllBooks();
+        const { q } = req.query; // q = từ khóa tìm kiếm
+        const books = await BookService.getAllBooks(q?.toString());
         res.json(books);
     }
     catch (error) {
@@ -51,7 +52,7 @@ const getBookById = async (req, res) => {
         const { bookId } = req.params;
         const book = await BookService.getBookById(bookId);
         if (!book) {
-            return res.status(404).json({ message: 'Không tìm thấy sách' });
+            return res.status(400).json({ message: 'Không tìm thấy sách' });
         }
         res.json(book);
     }

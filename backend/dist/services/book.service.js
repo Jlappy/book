@@ -5,9 +5,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBook = exports.updateBook = exports.createBook = exports.getBookById = exports.getAllBooks = void 0;
 const book_model_1 = __importDefault(require("../models/book.model"));
-const getAllBooks = async () => {
-    const books = await book_model_1.default.find();
-    return books;
+const getAllBooks = async (q) => {
+    if (q && q.trim()) {
+        const keyword = q.trim();
+        return await book_model_1.default.find({
+            $or: [
+                { title: { $regex: keyword, $options: 'i' } },
+                { description: { $regex: keyword, $options: 'i' } },
+                { author: { $elemMatch: { $regex: keyword, $options: 'i' } } }
+            ]
+        });
+    }
+    return await book_model_1.default.find();
 };
 exports.getAllBooks = getAllBooks;
 const getBookById = async (bookId) => {

@@ -27,7 +27,7 @@ app.use((0, express_session_1.default)({
         secure: false, // BẮT BUỘC LÀ TRUE TRONG PRODUCTION VỚI HTTPS
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24,
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+        sameSite: 'lax'
     }
 }));
 // Định nghĩa các route

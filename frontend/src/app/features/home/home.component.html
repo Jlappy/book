@@ -10,12 +10,15 @@
     </div>
 
     <!-- Danh sách sách -->
-    <div *ngIf="!loading && paginatedBooks.length > 0" class="book-grid">
-        <app-book-card *ngFor="let book of paginatedBooks" [book]="book" [isFavorite]="isInFavorites(book._id!)"
-            [showActions]="true" (toggleFavorite)="toggleFavorite($event)" (addToCart)="addToCart($event)">
-        </app-book-card>
+    <div class="book-grid" *ngIf="!loading && paginatedBooks.length > 0">
+        <ng-container *ngFor="let book of paginatedBooks">
+            <ng-container *ngIf="book && book._id">
+                <app-book-card [book]="book" [showActions]="true" [isFavorite]="favoriteSet.has(book._id)"
+                    (toggleFavorite)=" toggleFavorite($event)" (addToCart)="addToCart($event)"
+                    class=" book-card-item"></app-book-card>
+            </ng-container>
+        </ng-container>
     </div>
-
     <!-- Trạng thái rỗng -->
     <div *ngIf="!loading && paginatedBooks.length === 0 && !errorMessage" class="empty-state">
         <p>📚 Hiện không có sách nào để hiển thị.</p>
