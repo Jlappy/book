@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.register = void 0;
+exports.getUsersByRoleService = exports.login = exports.register = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
 const register = async (email, password, role = 'user') => {
     const existing = await user_model_1.default.findOne({ email });
@@ -41,3 +41,7 @@ const login = async (email, password) => {
     return userObject;
 };
 exports.login = login;
+const getUsersByRoleService = async (role) => {
+    return await user_model_1.default.find({ role }).select('-password');
+};
+exports.getUsersByRoleService = getUsersByRoleService;

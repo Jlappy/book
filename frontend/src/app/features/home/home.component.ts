@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
     books: IBook[] = [];
 
     paginatedBooks: IBook[] = [];
-    favorites: string[] = [];
+    favorites: IBook[] = [];
     favoriteSet: Set<string> = new Set();
 
     totalItems: number = 0;
@@ -66,33 +66,69 @@ export class HomeComponent implements OnInit {
                 console.error('Lỗi khi tải sách:', error);
                 this.errorMessage = 'Không thể tải sách.';
                 return of([] as IBook[]);
-            }),
-            finalize(() => this.loading = false)
-        )
-            .subscribe(books => {
-                this.books = books;
-                this.totalItems = books.length;
-                this.paginate()
             })
+        );
 
-        if (this.authService.isLoggedIn()) {
-            this.favoriteService.getFavorites().pipe(
+        const favorites$ = this.authService.isUser() ?
+            this.favoriteService.getFavoriteBooks().pipe(
                 catchError(error => {
                     console.error('Lỗi khi tải yêu thích:', error);
-                    return of([] as string[]);
+                    return of([] as IBook[]);
                 })
-            )
-                .subscribe(favorites => {
-                    this.favorites = favorites;
-                    this.favoriteSet = new Set(favorites)
-                })
-        }
+            ) :
+            of([] as IBook[]);
+
+        forkJoin([books$, favorites$]).pipe(
+            finalize(() => this.loading = false)
+        ).subscribe(([books, favorites]) => {
+            this.favorites = favorites;
+
+            this.favoriteSet = new Set(favorites.map(f => f._id));
+
+            this.books = books.map(book => ({
+                ...book,
+                isInFavorites: this.favoriteSet.has(book._id)
+            }));
+
+            this.totalItems = this.books.length;
+            this.paginate();
+        });
     }
 
     searchBooks(term: string): void {
-        this.bookService.searchBooksInDb(term).subscribe(results => {
-            this.books = results;
-            this.totalItems = results.length;
+        this.loading = true;
+        this.errorMessage = null;
+
+        const searchResults$ = this.bookService.searchBooksInDb(term).pipe(
+            catchError(error => {
+                console.error('Lỗi khi tìm kiếm sách:', error);
+                this.errorMessage = 'Không thể tìm kiếm sách.';
+                return of([] as IBook[]);
+            })
+        );
+
+        const favorites$ = this.authService.isLoggedIn()
+            ? this.favoriteService.getFavoriteBooks().pipe(
+                catchError(error => {
+                    console.error('Lỗi khi tải yêu thích trong tìm kiếm:', error);
+                    return of([] as IBook[]);
+                })
+            )
+            : of([] as IBook[]);
+
+
+        forkJoin([searchResults$, favorites$]).pipe(
+            finalize(() => this.loading = false)
+        ).subscribe(([results, favorites]) => {
+            this.favorites = favorites;
+            this.favoriteSet = new Set(favorites.map(f => f._id));
+
+            this.books = results.map(book => ({
+                ...book,
+                isInFavorites: this.favoriteSet.has(book._id)
+            }));
+
+            this.totalItems = this.books.length;
             this.currentPage = 1;
             this.paginate();
         });
@@ -110,14 +146,23 @@ export class HomeComponent implements OnInit {
         this.paginate();
     }
 
-    isInFavorites(bookId: string): boolean {
-        return this.favoriteSet.has(bookId)
-    }
     toggleFavorite(bookId: string): void {
-        if (this.isInFavorites(bookId)) {
+        // Tìm sách trong mảng `books` để cập nhật trực tiếp trạng thái `isInFavorites` của nó
+        const bookToUpdate = this.books.find(book => book._id === bookId);
+
+        if (!bookToUpdate) {
+            console.warn('Không tìm thấy sách để cập nhật trạng thái yêu thích:', bookId);
+            return;
+        }
+
+        if (bookToUpdate.isInFavorites) {
             this.favoriteService.removeFavorite(bookId).subscribe({
                 next: () => {
-                    this.favorites = this.favorites.filter(id => id !== bookId);
+                    this.favoriteSet.delete(bookId);
+                    this.favorites = this.favorites.filter(book => book._id !== bookId);
+                    bookToUpdate.isInFavorites = false;
+
+
                     this.snackBar.open('Đã xóa khỏi danh sách yêu thích!', 'Đóng', { duration: 3000, panelClass: ['snackbar-success'] });
                 },
                 error: (err) => {
@@ -129,7 +174,12 @@ export class HomeComponent implements OnInit {
         } else {
             this.favoriteService.addFavorite(bookId).subscribe({
                 next: () => {
-                    this.favorites = [...this.favorites, bookId];
+                    this.favoriteSet.add(bookId);
+                    const favoriteBook = this.books.find(book => book._id === bookId);
+                    if (favoriteBook) this.favorites = [...this.favorites, favoriteBook];
+                    bookToUpdate.isInFavorites = true;
+
+
                     this.snackBar.open('Đã thêm vào danh sách yêu thích!', 'Đóng', { duration: 3000, panelClass: ['snackbar-success'] });
                 },
                 error: (err) => {
@@ -140,6 +190,7 @@ export class HomeComponent implements OnInit {
             });
         }
     }
+
 
     addToCart(bookId: string): void {
         this.cartService.addToCart(bookId, 1).subscribe({

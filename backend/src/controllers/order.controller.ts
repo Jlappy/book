@@ -42,4 +42,18 @@ export const getOrderById = async (req: Request, res: Response) => {
     console.error(`Lỗi khi lấy đơn hàng ID ${req.params.orderId}:`, error);
     res.status(500).json({ message: error.message || 'Lỗi server khi lấy đơn hàng' });
   }
+
 };
+
+export const getOrdersByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const orders = await orderService.getOrdersByUserIdService(userId);
+    res.json(orders);
+  } catch (error) {
+    console.error('Lỗi khi lấy đơn hàng theo user:', error);
+    res.status(500).json({ message: 'Lỗi server' });
+  }
+};
+

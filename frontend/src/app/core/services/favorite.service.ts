@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
+import { IBook } from '../../shared/models/book.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,10 @@ export class FavoriteService {
 
   getFavorites(): Observable<string[]> {
     return this.baseService.get<string[]>(this.apiUrl);
+  }
+
+  getFavoriteBooks(): Observable<IBook[]> {
+    return this.baseService.get<IBook[]>(`${this.apiUrl}/fav-books`)
   }
 
   addFavorite(bookId: string): Observable<any> {

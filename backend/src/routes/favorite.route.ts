@@ -7,6 +7,7 @@ const router = Router();
 router.use(authMiddleware, onlyUser);
 
 router.get('/', favoriteController.getFavorites);
+router.get('/fav-books', favoriteController.getFavoriteBooks);
 router.post('/', favoriteController.addFavorite);
 router.delete('/:bookId', favoriteController.removeFavorite);
 

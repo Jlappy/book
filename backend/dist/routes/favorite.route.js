@@ -40,6 +40,7 @@ const auth_role_middleware_1 = require("../middlewares/auth-role.middleware");
 const router = (0, express_1.Router)();
 router.use(auth_middleware_1.authMiddleware, auth_role_middleware_1.onlyUser);
 router.get('/', favoriteController.getFavorites);
+router.get('/fav-books', favoriteController.getFavoriteBooks);
 router.post('/', favoriteController.addFavorite);
 router.delete('/:bookId', favoriteController.removeFavorite);
 exports.default = router;

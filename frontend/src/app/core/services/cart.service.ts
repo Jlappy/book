@@ -30,4 +30,8 @@ export class CartService {
   clearCart(): Observable<ICartPopulated> {
     return this.baseService.delete<ICartPopulated>(this.apiUrl);
   }
+
+  getCartByUserId(userId: string): Observable<ICartPopulated> {
+    return this.baseService.get<ICartPopulated>(`${this.apiUrl}/admin/${userId}`);
+  }
 }

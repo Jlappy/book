@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearCart = exports.removeFromCart = exports.updateQuantity = exports.addToCart = exports.getCart = void 0;
+exports.getCartByUserId = exports.clearCart = exports.removeFromCart = exports.updateQuantity = exports.addToCart = exports.getCart = void 0;
 const mongoose_1 = require("mongoose");
 const cart_model_1 = __importDefault(require("../models/cart.model"));
 const book_model_1 = __importDefault(require("../models/book.model"));
@@ -86,3 +86,7 @@ const clearCart = async (userId) => {
     return (await cart.populate('items.book'));
 };
 exports.clearCart = clearCart;
+const getCartByUserId = async (userId) => {
+    return cart_model_1.default.findOne({ user: userId }).populate('items.book');
+};
+exports.getCartByUserId = getCartByUserId;

@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeFavorite = exports.addFavorite = exports.getFavorites = void 0;
+exports.removeFavorite = exports.addFavorite = exports.getFavoriteBooks = exports.getFavorites = void 0;
 const favoriteService = __importStar(require("../services/favorite.service"));
 const getFavorites = async (req, res) => {
     try {
@@ -47,6 +47,18 @@ const getFavorites = async (req, res) => {
     }
 };
 exports.getFavorites = getFavorites;
+const getFavoriteBooks = async (req, res) => {
+    try {
+        const userId = req.session.user.id;
+        const result = await favoriteService.getFavoriteBooks(userId);
+        res.json(result);
+    }
+    catch (error) {
+        console.error('Lỗi khi lấy danh sách yêu thích:', error);
+        res.status(500).json({ message: error.message || 'Lỗi server khi lấy danh sách yêu thích' });
+    }
+};
+exports.getFavoriteBooks = getFavoriteBooks;
 const addFavorite = async (req, res) => {
     try {
         const userId = req.session.user.id;

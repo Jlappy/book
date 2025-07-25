@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearCart = exports.removeFromCart = exports.updateQuantity = exports.addToCart = exports.getCart = void 0;
+exports.getCartByUserId = exports.clearCart = exports.removeFromCart = exports.updateQuantity = exports.addToCart = exports.getCart = void 0;
 const cartService = __importStar(require("../services/cart.service"));
 const getCart = async (req, res) => {
     try {
@@ -107,3 +107,17 @@ const clearCart = async (req, res) => {
     }
 };
 exports.clearCart = clearCart;
+const getCartByUserId = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const cart = await cartService.getCartByUserId(userId);
+        if (!cart)
+            return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
+        res.json(cart);
+    }
+    catch (error) {
+        console.error('Lỗi khi lấy giỏ hàng:', error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+exports.getCartByUserId = getCartByUserId;

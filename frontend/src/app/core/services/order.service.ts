@@ -22,4 +22,8 @@ export class OrderService {
   getOrderById(orderId: string): Observable<IOrderPopulated> {
     return this.baseService.get<IOrderPopulated>(`${this.apiUrl}/${orderId}`);
   }
+
+  getOrdersByUserId(userId: string): Observable<IOrderPopulated[]> {
+    return this.baseService.get<IOrderPopulated[]>(`${this.apiUrl}/user/${userId}`)
+  }
 }

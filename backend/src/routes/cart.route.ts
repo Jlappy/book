@@ -11,5 +11,6 @@ router.post('/', cartController.addToCart);
 router.put('/', cartController.updateQuantity);
 router.delete('/:bookId', cartController.removeFromCart);
 router.delete('/', cartController.clearCart);
+router.get('/admin/:userId', authMiddleware, cartController.getCartByUserId);
 
 export default router;

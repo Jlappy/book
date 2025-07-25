@@ -42,4 +42,5 @@ router.use(auth_middleware_1.authMiddleware, auth_role_middleware_1.onlyUser);
 router.get('/', orderController.getOrders);
 router.post('/', orderController.createOrder);
 router.get('/:orderId', orderController.getOrderById);
+router.get('/user/:userId', auth_middleware_1.authMiddleware, auth_role_middleware_1.onlyAdmin, orderController.getOrdersByUserId);
 exports.default = router;

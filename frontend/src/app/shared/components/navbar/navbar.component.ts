@@ -52,12 +52,11 @@ export class NavbarComponent {
     this.authService.logout().subscribe({
       next: () => {
         console.log('Đăng xuất thành công');
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         console.error('Lỗi khi đăng xuất:', err);
       }
     });
   }
-
 }

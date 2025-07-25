@@ -67,3 +67,16 @@ export const clearCart = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message || 'Lỗi server khi xóa giỏ hàng' });
   }
 };
+
+export const getCartByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const cart = await cartService.getCartByUserId(userId);
+    if (!cart) return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
+    res.json(cart);
+  } catch (error) {
+    console.error('Lỗi khi lấy giỏ hàng:', error);
+    res.status(500).json({ message: 'Lỗi server' });
+  }
+};

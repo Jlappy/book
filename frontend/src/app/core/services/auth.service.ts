@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import { BehaviorSubject, catchError, finalize, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, Observable, of, take, tap } from 'rxjs';
 import { IUser, ILoginResponse, IRegisterResponse } from '../../shared/models/user.model';
 import { ILoginCredentials, IRegisterCredentials } from '../../shared/models/user.model';
 
@@ -49,18 +49,18 @@ export class AuthService {
 
   loadCurrentUser(): Observable<IUser | null> {
     return this.baseService.get<IUser>(`${this.apiUrl}/me`).pipe(
-      tap(user => {
-        // console.log('User loaded via session:', user);
-        this.currentUserSubject.next(user);
-      }),
-      catchError(error => {
-        // console.error('Session invalid or expired:', error);
+      take(1),
+      tap(user => this.currentUserSubject.next(user)),
+      catchError(() => {
         this.currentUserSubject.next(null);
         return of(null);
       })
     );
   }
 
+  getUsersByRole(role: String) {
+    return this.baseService.get<IUser[]>(`/users/by-role?role=${role}`);
+  }
   // 🧠 Helper functions
   getCurrentUserValue(): IUser | null {
     return this.currentUserSubject.value;

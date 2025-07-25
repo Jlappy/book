@@ -44,4 +44,5 @@ router.post('/', cartController.addToCart);
 router.put('/', cartController.updateQuantity);
 router.delete('/:bookId', cartController.removeFromCart);
 router.delete('/', cartController.clearCart);
+router.get('/admin/:userId', auth_middleware_1.authMiddleware, cartController.getCartByUserId);
 exports.default = router;

@@ -41,3 +41,7 @@ export const getOrderById = async (userId: string, orderId: string): Promise<IOr
     .populate<{ items: { book: IBook, quantity: number, price: number }[] }>('items.book') as unknown as IOrderPopulated | null;
   return order;
 };
+
+export const getOrdersByUserIdService = async (userId: string) => {
+  return await Order.find({ user: userId }).populate('items.book');
+};

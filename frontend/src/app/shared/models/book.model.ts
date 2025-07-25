@@ -10,6 +10,7 @@ export interface IBook {
   first_publish_year?: number;
   source?: 'openlibrary' | 'manual';
   createdAt?: Date;
+  isInFavorites?: boolean;
 }
 export interface IOpenLibrarySearchBackendResult {
   title: string;

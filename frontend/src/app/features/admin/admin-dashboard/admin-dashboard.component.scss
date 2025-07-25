@@ -1,0 +1,21 @@
+.dashboard-container {
+  height: 100vh;
+}
+
+mat-sidenav {
+  width: 220px;
+}
+
+mat-nav-list a {
+  display: flex;
+  align-items: center;
+
+  .mat-icon {
+    gap: 10px;
+  }
+
+}
+
+mat-nav-list a.active {
+  background: #e0f2f1;
+}

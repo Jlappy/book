@@ -12,6 +12,17 @@ export const getFavorites = async (req: Request, res: Response) => {
   }
 };
 
+export const getFavoriteBooks = async (req: Request, res: Response) => {
+  try {
+    const userId = req.session.user!.id;
+    const result = await favoriteService.getFavoriteBooks(userId);
+    res.json(result);
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách yêu thích:', error);
+    res.status(500).json({ message: (error as { message: string }).message || 'Lỗi server khi lấy danh sách yêu thích' });
+  }
+}
+
 export const addFavorite = async (req: Request, res: Response) => {
   try {
     const userId = req.session.user!.id;

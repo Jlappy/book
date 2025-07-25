@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrderById = exports.createOrder = exports.getOrders = void 0;
+exports.getOrdersByUserId = exports.getOrderById = exports.createOrder = exports.getOrders = void 0;
 const orderService = __importStar(require("../services/order.service"));
 const getOrders = async (req, res) => {
     try {
@@ -81,3 +81,15 @@ const getOrderById = async (req, res) => {
     }
 };
 exports.getOrderById = getOrderById;
+const getOrdersByUserId = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const orders = await orderService.getOrdersByUserIdService(userId);
+        res.json(orders);
+    }
+    catch (error) {
+        console.error('Lỗi khi lấy đơn hàng theo user:', error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+exports.getOrdersByUserId = getOrdersByUserId;

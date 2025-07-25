@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProfile = exports.logout = exports.login = exports.register = void 0;
+exports.getUsersByRole = exports.getProfile = exports.logout = exports.login = exports.register = void 0;
 const UserService = __importStar(require("../services/user.service"));
 const register = async (req, res) => {
     try {
@@ -94,3 +94,22 @@ const getProfile = (req, res) => {
     }
 };
 exports.getProfile = getProfile;
+const getUsersByRole = async (req, res) => {
+    const { role } = req.query;
+    if (!role || typeof role !== 'string') {
+        return res.status(400).json({ message: 'Tham số vai trò không hợp lệ.' });
+    }
+    const validRoles = ['admin', 'user'];
+    if (!validRoles.includes(role)) {
+        return res.status(400).json({ message: 'Vai trò không tồn tại.' });
+    }
+    try {
+        const users = await UserService.getUsersByRoleService(role);
+        res.status(200).json(users);
+    }
+    catch (error) {
+        console.error(`❌ Lỗi khi lấy danh sách người dùng theo role (${role}):`, error);
+        res.status(500).json({ message: 'Lỗi server. Không thể lấy danh sách người dùng.' });
+    }
+};
+exports.getUsersByRole = getUsersByRole;

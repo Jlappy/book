@@ -6,7 +6,7 @@ import Book, { IBook } from '../models/book.model';
 
 export const getCart = async (userId: string): Promise<ICartPopulated | null> => {
     const cart = await Cart.findOne({ user: userId })
-                           .populate<{ items: { book: IBook, quantity: number }[] }>('items.book');
+        .populate<{ items: { book: IBook, quantity: number }[] }>('items.book');
     // THAY ĐỔI Ở ĐÂY: Ép kiểu qua unknown trước
     return cart as unknown as ICartPopulated | null;
 };
@@ -92,4 +92,8 @@ export const clearCart = async (userId: string): Promise<ICartPopulated> => {
     await cart.save();
     // THAY ĐỔI Ở ĐÂY: Ép kiểu qua unknown trước
     return (await cart.populate<{ items: { book: IBook, quantity: number }[] }>('items.book')) as unknown as ICartPopulated;
+};
+
+export const getCartByUserId = async (userId: string) => {
+    return Cart.findOne({ user: userId }).populate('items.book');
 };

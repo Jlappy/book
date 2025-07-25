@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
 
 import { CartService } from '../../core/services/cart.service';
 import { ICartPopulated } from '../../shared/models/cart.model';
+import { OrderService } from '../../core/services/order.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
@@ -27,10 +29,18 @@ export class CartComponent implements OnInit {
   cart: ICartPopulated | null = null;
   loading = true;
 
+  orderData = {
+    items: [],
+    total: 0,
+    status: 'pending' as const
+  };
+
   constructor(
     private cartService: CartService,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private orderService: OrderService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadCart();
@@ -79,4 +89,32 @@ export class CartComponent implements OnInit {
   total(): number {
     return this.cart?.items.reduce((sum, item) => sum + item.book.price * item.quantity, 0) || 0;
   }
+
+  submitOrder(): void {
+    if (!this.cart || this.cart.items.length === 0) {
+      this.snackBar.open('Giỏ hàng trống!', 'Đóng', { duration: 3000 });
+      return;
+    }
+
+    const orderData = {
+      items: this.cart.items.map(item => ({
+        bookId: item.book._id,
+        quantity: item.quantity,
+        price: item.book.price
+      })),
+      total: this.total(),
+      status: 'pending' as const
+    };
+
+    this.orderService.createOrder(orderData).subscribe({
+      next: () => {
+        this.snackBar.open('Đặt hàng thành công!', 'Đóng', { duration: 3000 });
+        this.router.navigate(['/checkout']);
+      },
+      error: () => {
+        this.snackBar.open('Lỗi khi đặt hàng!', 'Đóng', { duration: 3000 });
+      }
+    });
+  }
+
 }
