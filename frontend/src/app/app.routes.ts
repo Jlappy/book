@@ -15,7 +15,9 @@ import { guestGuard } from './core/guards/guest.guard';
 import { userOnlyGuard } from './core/guards/user-only.guard';
 import { BookManagerComponent } from './features/admin/book-manager/book-manager.component';
 import { OrderManagerComponent } from './features/admin/order-manager/order-manager.component';
+import { UserManagerComponent } from './features/admin/user-manager/user-manager.component';
 import { AdminManagerComponent } from './features/admin/admin-manager/admin-manager.component';
+import { OverviewComponent } from './features/admin/overview/overview.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -29,12 +31,12 @@ export const routes: Routes = [
     { path: 'account', component: AccountComponent, canActivate: [authGuard] },
     {
         path: 'dashboard', component: AdminDashboardComponent, canActivate: [adminGuard], children: [
+            { path: '', component: OverviewComponent },
             { path: 'books', component: BookManagerComponent },
             { path: 'orders', component: OrderManagerComponent },
             { path: 'openlibrary-search', component: OpenLibrarySearchComponent },
-            { path: 'users', component: AdminManagerComponent },
-            { path: '', redirectTo: 'books', pathMatch: 'full' }
-
+            { path: 'users', component: UserManagerComponent },
+            { path: 'admins', component: AdminManagerComponent },
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' },

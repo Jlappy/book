@@ -38,9 +38,10 @@ const orderController = __importStar(require("../controllers/order.controller"))
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const auth_role_middleware_1 = require("../middlewares/auth-role.middleware");
 const router = (0, express_1.Router)();
-router.use(auth_middleware_1.authMiddleware, auth_role_middleware_1.onlyUser);
+router.use(auth_middleware_1.authMiddleware);
 router.get('/', orderController.getOrders);
 router.post('/', orderController.createOrder);
 router.get('/:orderId', orderController.getOrderById);
 router.get('/user/:userId', auth_middleware_1.authMiddleware, auth_role_middleware_1.onlyAdmin, orderController.getOrdersByUserId);
+router.patch('/:orderId/status', auth_middleware_1.authMiddleware, auth_role_middleware_1.onlyAdmin, orderController.updateOrderStatus);
 exports.default = router;

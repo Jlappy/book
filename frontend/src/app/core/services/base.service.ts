@@ -38,4 +38,10 @@ export class BaseService {
     });
   }
 
+  patch<T>(path: string, body: any): Observable<T> {
+    return this.http.patch<T>(`${this.localAPI}${path}`, body, {
+      withCredentials: true
+    });
+  }
+
 }

@@ -3,7 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsersByRoleService = exports.login = exports.register = void 0;
+exports.getOverviewStats = exports.getUsersByRoleService = exports.login = exports.register = void 0;
+const book_model_1 = __importDefault(require("../models/book.model"));
+const order_model_1 = __importDefault(require("../models/order.model"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const register = async (email, password, role = 'user') => {
     const existing = await user_model_1.default.findOne({ email });
@@ -45,3 +47,28 @@ const getUsersByRoleService = async (role) => {
     return await user_model_1.default.find({ role }).select('-password');
 };
 exports.getUsersByRoleService = getUsersByRoleService;
+const getOverviewStats = async () => {
+    const [booksCount, ordersCount, usersCount] = await Promise.all([
+        book_model_1.default.countDocuments(),
+        order_model_1.default.countDocuments(),
+        user_model_1.default.countDocuments({ role: 'user' }),
+    ]);
+    const [pendingOrdersCount, completedOrdersCount, totalRevenueResult] = await Promise.all([
+        order_model_1.default.countDocuments({ status: 'pending' }),
+        order_model_1.default.countDocuments({ status: 'completed' }),
+        order_model_1.default.aggregate([
+            { $match: { status: 'completed' } },
+            { $group: { _id: null, total: { $sum: '$total' } } },
+        ]),
+    ]);
+    const totalRevenue = totalRevenueResult[0]?.total || 0;
+    return {
+        booksCount,
+        ordersCount,
+        usersCount,
+        pendingOrdersCount,
+        completedOrdersCount,
+        totalRevenue,
+    };
+};
+exports.getOverviewStats = getOverviewStats;

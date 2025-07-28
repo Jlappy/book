@@ -26,4 +26,8 @@ export class OrderService {
   getOrdersByUserId(userId: string): Observable<IOrderPopulated[]> {
     return this.baseService.get<IOrderPopulated[]>(`${this.apiUrl}/user/${userId}`)
   }
+
+  updateOrderStatus(orderId: string, status: 'pending' | 'completed'): Observable<IOrderPopulated> {
+    return this.baseService.patch<IOrderPopulated>(`${this.apiUrl}/${orderId}/status`, { status });
+  }
 }

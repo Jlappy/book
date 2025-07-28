@@ -30,7 +30,7 @@ export class AdminManagerComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.authService.getUsersByRole('user').subscribe({
+    this.authService.getUsersByRole('admin').subscribe({
       next: users => {
         this.users = users;
       },
@@ -39,5 +39,5 @@ export class AdminManagerComponent implements OnInit {
       }
     });
   }
-  
+
 }

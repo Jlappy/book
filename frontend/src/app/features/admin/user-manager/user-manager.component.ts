@@ -1,44 +1,43 @@
-// import { Component, OnInit } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { MatTableModule } from '@angular/material/table';
-// import { IUser } from '../../../shared/models/user.model';
-// import { AuthService } from '../../../core/services/auth.service';
-// import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-// import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { AuthService } from '../../../core/services/auth.service';
+import { IUser } from '../../../shared/models/user.model';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-// @Component({
-//   selector: 'app-user-manager',
-//   imports: [
-//     CommonModule,
-//     MatTableModule,
-//     MatSnackBarModule
+@Component({
+    selector: 'app-user-manager',
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatSnackBarModule
+    ],
+    templateUrl: './user-manager.component.html',
+    styleUrl: './user-manager.component.scss'
+})
+export class UserManagerComponent implements OnInit {
+    users: IUser[] = [];
+    displayedColumns = ['email', '_id'];
 
-//   ],
-//   templateUrl: './user-manager.component.html',
-//   styleUrl: './user-manager.component.scss'
-// })
-// export class UserManagerComponent implements OnInit {
-//   users: IUser[] = [];
-//   displayedColumns = ['username', 'email', 'role'];
+    constructor(private authService: AuthService,
+        private snackBar: MatSnackBar
+    ) {
 
-//   constructor(
-//     private authService: AuthService,
-//     private snackBar: MatSnackBar,
-//     private router: Router
-//   ) { }
+    }
 
-//   ngOnInit(): void {
-//     this.loadUsers();
-//   }
+    ngOnInit(): void {
+        this.loadUsers();
+    }
 
-//   loadUsers(): void {
-//     this.authService.getUsersByRole('user').subscribe({
-//       next: users => {
-//         this.users = users;
-//       },
-//       error: () => {
-//         this.snackBar.open('Không thể tải người dùng.', 'Đóng', { duration: 3000 });
-//       }
-//     });
-//   }
-// }
+    loadUsers(): void {
+        this.authService.getUsersByRole('user').subscribe({
+            next: users => {
+                this.users = users;
+            },
+            error: () => {
+                this.snackBar.open('Không thể tải người dùng.', 'Đóng', { duration: 3000 });
+            }
+        });
+    }
+
+}

@@ -63,17 +63,22 @@ export class BookManagerComponent implements OnInit {
   }
 
   openEditBookDialog(book: IBook): void {
-    const dialogRef = this.dialog.open(BookFormDialogComponent, {
-      width: '400px',
-      data: book
-    });
+    this.bookService.getBookById(book._id).subscribe(freshBook => {
+      const dialogRef = this.dialog.open(BookFormDialogComponent, {
+        width: '400px',
+        data: freshBook
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadBooks();
-      }
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.bookService.updateBook(freshBook._id, result).subscribe(() => {
+            this.loadBooks();
+          });
+        }
+      });
     });
   }
+
 
   deleteBook(bookId?: string): void {
     if (!bookId) return;

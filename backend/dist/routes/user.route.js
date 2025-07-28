@@ -43,4 +43,5 @@ router.post('/login', UserController.login);
 router.post('/logout', UserController.logout);
 router.get('/me', auth_middleware_1.authMiddleware, UserController.getProfile);
 router.get('/by-role', auth_middleware_1.authMiddleware, auth_role_middleware_1.onlyAdmin, UserController.getUsersByRole);
+router.get('/stats', auth_middleware_1.authMiddleware, auth_role_middleware_1.onlyAdmin, UserController.getOverview);
 exports.default = router;

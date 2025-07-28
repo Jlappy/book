@@ -81,3 +81,13 @@ export const getUsersByRole = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Lỗi server. Không thể lấy danh sách người dùng.' });
     }
 };
+
+export const getOverview = async (req: Request, res: Response) => {
+    try {
+        const stats = await UserService.getOverviewStats();
+        res.json(stats);
+    } catch (err) {
+        console.error('[OverviewController] Lỗi khi lấy thống kê:', err);
+        res.status(500).json({ message: 'Lỗi máy chủ khi lấy thống kê' });
+    }
+};

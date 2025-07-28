@@ -1,5 +1,4 @@
-import { Types } from 'mongoose';
-import Order, { IOrder, IOrderItem, IOrderPopulated } from '../models/order.model';
+import Order, { IOrderPopulated } from '../models/order.model';
 import Cart, { ICart, ICartPopulated } from '../models/cart.model';
 import { IBook } from '../models/book.model';
 
@@ -15,11 +14,11 @@ export const createOrder = async (userId: string): Promise<IOrderPopulated> => {
   if (!cart || cart.items.length === 0) throw new Error('Giỏ hàng trống');
 
   const items = cart.items.map(i => {
-    if (!i.book || !i.book.price) { 
-        throw new Error(`Sách với ID ${i.book?._id || 'không xác định'} không có giá hoặc không tồn tại.`);
+    if (!i.book || !i.book.price) {
+      throw new Error(`Sách với ID ${i.book?._id || 'không xác định'} không có giá hoặc không tồn tại.`);
     }
     return {
-      book: i.book._id, 
+      book: i.book._id,
       quantity: i.quantity,
       price: i.book.price
     };
@@ -44,4 +43,14 @@ export const getOrderById = async (userId: string, orderId: string): Promise<IOr
 
 export const getOrdersByUserIdService = async (userId: string) => {
   return await Order.find({ user: userId }).populate('items.book');
+};
+
+export const updateOrderStatus = async (orderId: string, status: 'pending' | 'completed'): Promise<IOrderPopulated | null> => {
+  const updated = await Order.findByIdAndUpdate(
+    orderId,
+    { status },
+    { new: true }
+  ).populate('items.book');
+
+  return updated as unknown as IOrderPopulated | null;
 };

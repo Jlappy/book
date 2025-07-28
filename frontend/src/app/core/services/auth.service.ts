@@ -3,6 +3,7 @@ import { BaseService } from './base.service';
 import { BehaviorSubject, catchError, finalize, Observable, of, take, tap } from 'rxjs';
 import { IUser, ILoginResponse, IRegisterResponse } from '../../shared/models/user.model';
 import { ILoginCredentials, IRegisterCredentials } from '../../shared/models/user.model';
+import { IOverviewStats } from '../../shared/models/overview.model';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,10 @@ export class AuthService {
 
   getUsersByRole(role: String) {
     return this.baseService.get<IUser[]>(`/users/by-role?role=${role}`);
+  }
+
+  getOverviewStats(): Observable<IOverviewStats | null> {
+    return this.baseService.get<IOverviewStats>(`${this.apiUrl}/stats`)
   }
   // 🧠 Helper functions
   getCurrentUserValue(): IUser | null {

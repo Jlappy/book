@@ -1,0 +1,50 @@
+<div class="overview-container">
+    <h2>Thống kê tổng quan</h2>
+
+    <div class="stats" *ngIf="!isLoading && stats">
+        <mat-card class="stat-card books">
+            <mat-icon>menu_book</mat-icon>
+            <h3>{{ stats.booksCount }}</h3>
+            <p>Sách</p>
+        </mat-card>
+
+        <mat-card class="stat-card users">
+            <mat-icon>group</mat-icon>
+            <h3>{{ stats.usersCount }}</h3>
+            <p>Người dùng</p>
+        </mat-card>
+
+        <mat-card class="stat-card orders">
+            <mat-icon>receipt_long</mat-icon>
+            <h3>{{ stats.ordersCount }}</h3>
+            <p>Đơn hàng</p>
+        </mat-card>
+
+        <mat-card class="stat-card completed">
+            <mat-icon>check_circle</mat-icon>
+            <h3>{{ stats.completedOrdersCount }}</h3>
+            <p>Đã hoàn tất</p>
+        </mat-card>
+
+        <mat-card class="stat-card pending">
+            <mat-icon>hourglass_empty</mat-icon>
+            <h3>{{ stats.pendingOrdersCount }}</h3>
+            <p>Đang xử lý</p>
+        </mat-card>
+
+        <mat-card class="stat-card revenue">
+            <mat-icon>attach_money</mat-icon>
+            <h3>{{ stats.totalRevenue | currency:'VND':'symbol':'1.0-0' }}</h3>
+            <p>Doanh thu</p>
+        </mat-card>
+    </div>
+
+    <highcharts-chart [options]="chartOptions" style="width: 100%; height: 400px; display: block"></highcharts-chart>
+
+    <highcharts-chart [options]="chartOptions2" style="width: 100%; height: 400px; display: block"></highcharts-chart>
+
+
+    <div *ngIf="isLoading" class="loading-container">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+</div>

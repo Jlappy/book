@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrdersByUserIdService = exports.getOrderById = exports.createOrder = exports.getOrders = void 0;
+exports.updateOrderStatus = exports.getOrdersByUserIdService = exports.getOrderById = exports.createOrder = exports.getOrders = void 0;
 const order_model_1 = __importDefault(require("../models/order.model"));
 const cart_model_1 = __importDefault(require("../models/cart.model"));
 const getOrders = async (userId) => {
@@ -44,3 +44,8 @@ const getOrdersByUserIdService = async (userId) => {
     return await order_model_1.default.find({ user: userId }).populate('items.book');
 };
 exports.getOrdersByUserIdService = getOrdersByUserIdService;
+const updateOrderStatus = async (orderId, status) => {
+    const updated = await order_model_1.default.findByIdAndUpdate(orderId, { status }, { new: true }).populate('items.book');
+    return updated;
+};
+exports.updateOrderStatus = updateOrderStatus;

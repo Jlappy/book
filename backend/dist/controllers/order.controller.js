@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrdersByUserId = exports.getOrderById = exports.createOrder = exports.getOrders = void 0;
+exports.updateOrderStatus = exports.getOrdersByUserId = exports.getOrderById = exports.createOrder = exports.getOrders = void 0;
 const orderService = __importStar(require("../services/order.service"));
 const getOrders = async (req, res) => {
     try {
@@ -93,3 +93,22 @@ const getOrdersByUserId = async (req, res) => {
     }
 };
 exports.getOrdersByUserId = getOrdersByUserId;
+const updateOrderStatus = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const { status } = req.body;
+        if (!['pending', 'completed'].includes(status)) {
+            return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
+        }
+        const updatedOrder = await orderService.updateOrderStatus(orderId, status);
+        if (!updatedOrder) {
+            return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+        }
+        res.json(updatedOrder);
+    }
+    catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái đơn hàng:', error);
+        res.status(500).json({ message: error.message || 'Lỗi server' });
+    }
+};
+exports.updateOrderStatus = updateOrderStatus;

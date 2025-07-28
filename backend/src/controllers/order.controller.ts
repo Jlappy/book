@@ -57,3 +57,23 @@ export const getOrdersByUserId = async (req: Request, res: Response) => {
   }
 };
 
+export const updateOrderStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    if (!['pending', 'completed'].includes(status)) {
+      return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
+    }
+
+    const updatedOrder = await orderService.updateOrderStatus(orderId, status);
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+    }
+
+    res.json(updatedOrder);
+  } catch (error: any) {
+    console.error('Lỗi khi cập nhật trạng thái đơn hàng:', error);
+    res.status(500).json({ message: error.message || 'Lỗi server' });
+  }
+};

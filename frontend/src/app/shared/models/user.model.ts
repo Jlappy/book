@@ -1,6 +1,6 @@
 // IUser: Định nghĩa user object mà frontend sẽ làm việc.
 export interface IUser {
-  id: string; 
+  _id: string; 
   email: string;
   role: 'user' | 'admin'; 
   fullName?: string;

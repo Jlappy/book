@@ -1,3 +1,5 @@
+import Book from '../models/book.model';
+import Order from '../models/order.model'
 import User, { IUser, IUserResponse } from '../models/user.model';
 
 export const register = async (email: string, password: string, role: string = 'user'): Promise<IUser> => {
@@ -49,6 +51,33 @@ export const login = async (email: string, password: string): Promise<IUserRespo
 };
 
 export const getUsersByRoleService = async (role: string) => {
-  return await User.find({ role }).select('-password');
+    return await User.find({ role }).select('-password');
 };
 
+export const getOverviewStats = async () => {
+    const [booksCount, ordersCount, usersCount] = await Promise.all([
+        Book.countDocuments(),
+        Order.countDocuments(),
+        User.countDocuments({ role: 'user' }),
+    ]);
+
+    const [pendingOrdersCount, completedOrdersCount, totalRevenueResult] = await Promise.all([
+        Order.countDocuments({ status: 'pending' }),
+        Order.countDocuments({ status: 'completed' }),
+        Order.aggregate([
+            { $match: { status: 'completed' } },
+            { $group: { _id: null, total: { $sum: '$total' } } },
+        ]),
+    ]);
+
+    const totalRevenue = totalRevenueResult[0]?.total || 0;
+
+    return {
+        booksCount,
+        ordersCount,
+        usersCount,
+        pendingOrdersCount,
+        completedOrdersCount,
+        totalRevenue,
+    };
+};

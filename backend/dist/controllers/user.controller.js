@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsersByRole = exports.getProfile = exports.logout = exports.login = exports.register = void 0;
+exports.getOverview = exports.getUsersByRole = exports.getProfile = exports.logout = exports.login = exports.register = void 0;
 const UserService = __importStar(require("../services/user.service"));
 const register = async (req, res) => {
     try {
@@ -113,3 +113,14 @@ const getUsersByRole = async (req, res) => {
     }
 };
 exports.getUsersByRole = getUsersByRole;
+const getOverview = async (req, res) => {
+    try {
+        const stats = await UserService.getOverviewStats();
+        res.json(stats);
+    }
+    catch (err) {
+        console.error('[OverviewController] Lỗi khi lấy thống kê:', err);
+        res.status(500).json({ message: 'Lỗi máy chủ khi lấy thống kê' });
+    }
+};
+exports.getOverview = getOverview;
